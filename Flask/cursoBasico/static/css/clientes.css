@@ -1,0 +1,19 @@
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body{
+  background-color: blue;
+}
+
+h1{
+  color: lightblue;
+  font-size: 50;
+}
+
+h3{
+  color: bisque;
+  font-size: 50;
+}

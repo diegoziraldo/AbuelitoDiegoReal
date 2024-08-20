@@ -1,0 +1,22 @@
+#navigate ul {
+  list-style-type: none;
+  text-align: center;
+}
+
+#navigate li {
+  display: inline;
+  margin-right: 10px;
+}
+
+#navigate li a {
+  padding: 2px 7px;
+  color: #666;
+  background-color: #eeeeee;
+  border: 1px solid #ccc;
+  text-decoration: none;
+}
+
+#navigate li a:hover {
+  background-color: #333333;
+  color: #ffffff;
+}
