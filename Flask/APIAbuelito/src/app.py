@@ -7,10 +7,18 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.sql.expression import func
 import datetime
 from flask_marshmallow import Marshmallow
+from flask_cors import CORS
+
+
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:1234@localhost/AbuelitoDiego'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+CORS(app)
+CORS(app, resources={r"/api/*": {"origins": "http://localhost:5173"}})
+
+
 
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
@@ -85,7 +93,7 @@ with app.app_context():
     db.create_all()
 
 
-#####################################################
+#################### ESQUEMA DEL CLIENTE #################################
 
 
 class ClientSchema(ma.Schema):
@@ -110,9 +118,7 @@ task_schema = TaskSchema()
 tasks_schema = TaskSchema(many=True)
 
 
-#####################################################
-
-
+################## ENVIO DEL CLIENTE ###################################
 @app.route('/clients', methods=['POST'])
 def create_client():
   #Aca estoy guardando en una variable lo que llega del json.
@@ -131,10 +137,21 @@ def create_client():
   db.session.commit()
 
   return client_schema.jsonify(new_client)
+################## PEDIDO DEL CLIENTE ###################################
+
+@app.route('/clients', methods=['GET'])
+def get_clients():
+  all_clients = Clients.query.all()
+  result = clients_schema.dump(all_clients)
+  return jsonify(result)
 
 
-#####################################################
+#@app.route('/tasks/<id>', methods=['GET'])
+#def get_task(id):
+#  task = Task.query.get(id)
+#  return task_schema.jsonify(task)
 
+#################### ENVIO DE PRODUCTO #################################
 
 @app.route('/products', methods=['POST'])
 def create_product():
@@ -149,7 +166,13 @@ def create_product():
   brand = request.json['brand']
   unit = request.json['unit']
 
-          
+################## PEDIDO DEL PRODUCTO ###################################
+
+@app.route('/products', methods=['GET'])
+def get_products():
+  all_products = Products.query.all()
+  result = products_schema.dump(all_products)
+  return jsonify(result)     
   
   #Aca estoy creando una instancia de la clase Task, y pasandole por parametros los valores que guarde anteriormente
   new_product = Products(name, description,category,price,stock,sku,image_url,brand,unit)
@@ -160,9 +183,6 @@ def create_product():
 
   return product_schema.jsonify(new_product)
 
-
-
-#####################################################
 
 
 

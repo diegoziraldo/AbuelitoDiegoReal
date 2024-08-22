@@ -1,5 +1,6 @@
-LA API DE ABUELITO DIEGO LO VEO EN EL PUERTO 5001
 LA APP DE ABUELITO DIEGO LA VEO EN EL PUERTO 5000
+LA API DE ABUELITO DIEGO LO VEO EN EL PUERTO 5001
 
 EN EL ARCHIVO 'activate', voy a tener la configuracion del entorno virtual "VIRTUAL_ENV='/media/diego/Nuevo vol/github/AbuelitoDiego/Flask/APIAbuelito'" (modificar esa variable cuando haya que modificar entornos virtuales)
 
+Con 'pip freeze' voy a poder ver que paquetes tengo instalados en el entorno virtual. 
