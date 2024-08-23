@@ -137,6 +137,7 @@ def create_client():
   db.session.commit()
 
   return client_schema.jsonify(new_client)
+
 ################## PEDIDO DEL CLIENTE ###################################
 
 @app.route('/clients', methods=['GET'])

@@ -18,7 +18,6 @@ export const AddClients = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    // Aquí realizarías la lógica para enviar los datos del cliente, por ejemplo:
     console.log(`Cliente a agregar: ` + formData.name);
 
   setFormData({
