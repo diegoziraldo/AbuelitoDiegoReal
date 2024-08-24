@@ -17,7 +17,7 @@ export const App = () => {
         <Route path="/" element={<Index />} />
         <Route path="/add-clients" element={<AddClients />} />
         <Route path="/get-clients" element={<GetClients />} />
-        <Route path="/add-prducts" element={<AddProducts />} />
+        <Route path="/add-products" element={<AddProducts />} />
         <Route path="/get-products" element={<GetProducts />} />
         <Route path="/add-providers" element={<AddProviders />} />
         <Route path="/get-providers" element={<GetProviders />} />

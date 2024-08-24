@@ -1,4 +1,25 @@
+*{
+  padding: 0;
+  margin: 0;
+}
+
+
+.navbar-nav {
+  display: flex;
+  justify-content: space-around;
+  position: relative; /* Contenedor relativo para los enlaces */
+}
+
+.nav-link {
+  transition: transform 0.3s ease, background-color 0.3s ease;
+  position: relative;
+  padding: 10px; /* Añade padding para hacer el enlace más grande antes de la transformación */
+}
+
 .nav-item.nav-link.active {
-  background-color: cornflowerblue;
-  font-weight: bold;
+  background-color: skyblue;
+  border-radius: 5px;
+  text-shadow: 0.2px 0.2px;
+  z-index: 1; 
+  position: relative;
 }
