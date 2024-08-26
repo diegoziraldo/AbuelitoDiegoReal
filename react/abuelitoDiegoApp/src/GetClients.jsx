@@ -23,7 +23,7 @@ export const GetClients = () => {
     <div className="container table-responsive">
       <table className="table table-hover">
         <thead className="table-light">
-          <caption>Table Name</caption>
+          <caption></caption>
           <tr>
             <th>Nombre</th>
             <th>Apellido</th>

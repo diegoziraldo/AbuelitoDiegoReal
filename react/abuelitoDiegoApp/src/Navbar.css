@@ -16,7 +16,7 @@
   padding: 10px; /* Añade padding para hacer el enlace más grande antes de la transformación */
 }
 
-.nav-item.nav-link.active {
+.nav-link btn.active {
   background-color: skyblue;
   border-radius: 5px;
   text-shadow: 0.2px 0.2px;
