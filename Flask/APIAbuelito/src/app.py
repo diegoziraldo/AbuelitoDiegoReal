@@ -22,7 +22,7 @@ CORS(app, resources={r"/api/*": {"origins": "http://localhost:5173"}})
 
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
-
+################ MODELO DE CLIENTES #####################################
 class Clients(db.Model):
     __tablename__ = 'Clients' 
     id = db.Column(db.Integer, primary_key=True)
@@ -43,8 +43,7 @@ class Clients(db.Model):
         self.tel = tel
         self.email = email
 
-#####################################################
-
+################ MODELO DE PRODUCTOS ####################################
 class Products(db.Model):
     __tablename__ = 'Products' 
     id = db.Column(db.Integer, primary_key=True)
@@ -58,7 +57,7 @@ class Products(db.Model):
     sku = db.Column(db.String(100))
     image_url = db.Column(db.String(255)) 
     brand = db.Column(db.String(100))
-    unit = db.Column(db.Integer)
+    unit = db.Column(db.String(50))
         
     
     def __init__(self, name,description,category,price,stock,sku,image_url,brand,unit):
@@ -72,9 +71,19 @@ class Products(db.Model):
         self.brand = brand
         self.unit = unit
 
+################ MODELO DE CATEGORIAS ####################################
+class Categories(db.Model):
+    __tablename__ = 'Categories' 
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(70))
+    created_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
+    updated_at = db.Column(db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+        
+    
+    def __init__(self, name,description,category,price,stock,sku,image_url,brand,unit):
+        self.name = name
 
-#####################################################
-
+################ MODELO DE TAREAS ######################################
 class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(70), unique=True)
@@ -85,34 +94,40 @@ class Task(db.Model):
         self.description = description
 
 
-#####################################################
-
-
-# Mover db.create_all() dentro de un contexto de aplicación
+############# CON ESTE FRAGMENTO VAMOS A GENERAR TABLAS EN LA BASE DE DATOS ########################################
 with app.app_context():
     db.create_all()
 
 
 #################### ESQUEMA DEL CLIENTE #################################
-
-
 class ClientSchema(ma.Schema):
     class Meta:
         fields = ('id', 'name', 'lastName', 'created_at', 'updated_at', 'address', 'city', 'tel', 'email')
 
+#################### ESQUEMA DEL PRODUCTO #################################
 class ProductSchema(ma.Schema):
     class Meta:
         fields = ('id', 'name', 'description', 'created_at', 'updated_at', 'category', 'price', 'stock', 'sku', 'image_url', 'brand', 'unit')
 
+#################### ESQUEMA DE LA CATEGORIA #################################
+class CategorySchema(ma.Schema):
+    class Meta:
+        fields = ('id', 'name')
+        
+#################### ESQUEMA DE LA TAREA #################################
 class TaskSchema(ma.Schema):
     class Meta:
         fields = ('id', 'title', 'description')
 
+#Guardamos los esquemas en variables.
 client_schema = ClientSchema()
 clients_schema = ClientSchema(many=True)
 
 product_schema = ProductSchema()
 products_schema = ProductSchema(many=True)
+
+category_schema = ProductSchema()
+categories_schema = ProductSchema(many=True)
 
 task_schema = TaskSchema()
 tasks_schema = TaskSchema(many=True)
@@ -166,14 +181,6 @@ def create_product():
   image_url = request.json['image_url']
   brand = request.json['brand']
   unit = request.json['unit']
-
-################## PEDIDO DEL PRODUCTO ###################################
-
-@app.route('/products', methods=['GET'])
-def get_products():
-  all_products = Products.query.all()
-  result = products_schema.dump(all_products)
-  return jsonify(result)     
   
   #Aca estoy creando una instancia de la clase Task, y pasandole por parametros los valores que guarde anteriormente
   new_product = Products(name, description,category,price,stock,sku,image_url,brand,unit)
@@ -183,9 +190,45 @@ def get_products():
   db.session.commit()
 
   return product_schema.jsonify(new_product)
+  
 
+################## PEDIDO DEL PRODUCTO ###################################
 
+@app.route('/products', methods=['GET'])
+def get_products():
+  all_products = Products.query.all()
+  result = products_schema.dump(all_products)
+  return jsonify(result)     
+  
 
+#################### ENVIO DE CATEGORIAS #################################
+
+@app.route('/category', methods=['POST'])
+def create_category():
+  #Aca estoy guardando en una variable lo que llega del json.
+  name = request.json['name']
+
+  
+  #Aca estoy creando una instancia de la clase Task, y pasandole por parametros los valores que guarde anteriormente
+  new_category = Categories(name)
+  
+  #Aca estoy guardando en la base de datos lo que guarde anteriormente
+  db.session.add(new_category)
+  db.session.commit()
+
+  return product_schema.jsonify(new_category)
+  
+
+################## PEDIDO DE LA CATEGORIA ###################################
+
+@app.route('/category', methods=['GET'])
+def get_categories():
+  all_categories = Categories.query.all()
+  result = products_schema.dump(all_categories)
+  return jsonify(result)     
+  
+
+#################### ENVIO DE TAREAS #################################
 
 @app.route('/tasks', methods=['POST'])
 def create_task():
@@ -202,6 +245,7 @@ def create_task():
 
   return task_schema.jsonify(new_task)
 
+#################### PEDIDO DE TAREAS #################################
 
 @app.route('/tasks', methods=['GET'])
 def get_tasks():

@@ -22,7 +22,6 @@ export const Navbar = () => {
           <div className="navbar-nav">
 
             {/*############################ Boton Desplegable Clientes ####################################################################  */}
-
             <div className="nav-item dropdown">
               <button className="nav-link btn" onClick={() => toggleMenu("clients")}>
                 Clientes
@@ -49,8 +48,7 @@ export const Navbar = () => {
               )}
             </div>
 
-             {/*########################### Boton Desplegable Productos ####################################################################  */}
-
+            {/*########################### Boton Desplegable Productos ####################################################################  */}
             <div className="nav-item dropdown">
               <button
                 className="nav-link btn"
@@ -76,13 +74,19 @@ export const Navbar = () => {
                   >
                     Obtener Productos
                   </Link>
+                  <Link
+                    className={`dropdown-item ${location.pathname === "/get-list-products" ? "active" : ""
+                      }`}
+                    to="/get-list-products"
+                    onClick={closeAllMenus}
+                  >
+                    Lista de precios
+                  </Link>
                 </div>
               )}
             </div>
 
-             {/*############################ Boton Desplegable Proveedores ####################################################################  */}
-
-
+            {/*############################ Boton Desplegable Proveedores ####################################################################  */}
             <div className="nav-item dropdown">
               <button
                 className="nav-link btn"
@@ -112,9 +116,9 @@ export const Navbar = () => {
               )}
             </div>
 
-             {/*############################ Boton Desplegable Repartidores ####################################################################  */}
+            {/*############################ Boton Desplegable Repartidores ####################################################################  */}
 
-             <div className="nav-item dropdown">
+            <div className="nav-item dropdown">
               <button
                 className="nav-link btn"
                 onClick={() => toggleMenu("leaders")}
@@ -143,9 +147,9 @@ export const Navbar = () => {
               )}
             </div>
 
-             {/*############################ Boton Desplegable Ventas ####################################################################  */}
+            {/*############################ Boton Desplegable Ventas ####################################################################  */}
 
-             <div className="nav-item dropdown">
+            <div className="nav-item dropdown">
               <button
                 className="nav-link btn"
                 onClick={() => toggleMenu("sales")}
@@ -173,6 +177,38 @@ export const Navbar = () => {
                 </div>
               )}
             </div>
+
+            {/*############################ Boton Desplegable Pagos ####################################################################  */}
+
+            <div className="nav-item dropdown">
+              <button
+                className="nav-link btn"
+                onClick={() => toggleMenu("payments")}
+              >
+                Pagos
+              </button>
+              {activeMenu === "payments" && (
+                <div className="dropdown-menu show">
+                  <Link
+                    className={`dropdown-item ${location.pathname === "/add-payments" ? "active" : ""
+                      }`}
+                    to="/add-payments"
+                    onClick={closeAllMenus}
+                  >
+                    Agregar Pago
+                  </Link>
+                  <Link
+                    className={`dropdown-item ${location.pathname === "/get-payments" ? "active" : ""
+                      }`}
+                    to="/get-sales"
+                    onClick={closeAllMenus}
+                  >
+                    Obtener Pagos
+                  </Link>
+                </div>
+              )}
+            </div>
+
 
           </div>
         </div>
