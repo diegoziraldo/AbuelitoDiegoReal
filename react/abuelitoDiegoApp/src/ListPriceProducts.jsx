@@ -46,12 +46,6 @@ export const ListPriceProducts = () => {
 
 
   const categories = dataArray.map(cat => cat.category);
-  //const categories = ['caca']
-
-
-  // const categories = dataArray.category.map(cat => cat.name);
-
-  
 
   const handleCheckboxChange = (event) => {
     const { value, checked } = event.target;
@@ -63,7 +57,6 @@ export const ListPriceProducts = () => {
       setSelectedCategories(selectedCategories.filter((category) => category !== value));
     }
   };
-
 
   return (
     <>
@@ -82,7 +75,6 @@ export const ListPriceProducts = () => {
           <label htmlFor={`category-${index}`}>{category}</label>
         </div>
       ))}
-      <p>Categorías seleccionadas: {selectedCategories.join(', ')}</p>
     </div>
 
       <div className="container table-responsive">
