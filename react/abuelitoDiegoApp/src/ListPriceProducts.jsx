@@ -1,100 +1,89 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import "bootstrap/dist/css/bootstrap.min.css";
-
+import { Checkbox } from '@mui/material';
 
 export const ListPriceProducts = () => {
-  const [data, setData] = useState(null);
+  const [allData, setAllData] = useState({});
+  const [categories, setCategories] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
-  const [dataArray, setDataArray] = useState([]); 
 
+  // Obtener productos y categorías
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/products');
-        setData(response.data);
-      
+        const response = await Promise.all([
+          axios.get('http://localhost:5000/products'),
+          axios.get('http://localhost:5000/category')
+        ]);
+        
+        const [products, categories] = response;
+        const groupedData = {};
+        products.data.forEach(product => {
+          if (!groupedData[product.category]) {
+            groupedData[product.category] = [];
+          }
+          groupedData[product.category].push(product);
+        });
+        setAllData(groupedData);
+        setCategories(categories.data);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
-
     fetchData();
   }, []);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get('http://localhost:5000/products');
-        console.log('Datos obtenidos de la API:', response.data);
-
-        // Asegurarse de que los datos sean un array antes de actualizarlos
-        if (Array.isArray(response.data)) {
-          setDataArray(response.data); // Actualiza el array con los datos de la API
-          console.log(response.data);
-          
-        } else {
-          console.error('La respuesta no es un array');
-        }
-      } catch (error) {
-        console.error('Error al obtener los datos:', error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-
-  const categories = dataArray.map(cat => cat.category);
-
-  const handleCheckboxChange = (event) => {
-    const { value, checked } = event.target;
-
-    // Si está seleccionado, agregarlo al estado, de lo contrario eliminarlo
-    if (checked) {
-      setSelectedCategories([...selectedCategories, value]);
+  // Manejar cambios en los checkboxes de las categorías
+  const handleCheckboxChange = (event, categoryId) => {
+    if (event.target.checked) {
+      // Agregar la categoría seleccionada al estado
+      setSelectedCategories([...selectedCategories, categoryId]);
     } else {
-      setSelectedCategories(selectedCategories.filter((category) => category !== value));
+      // Eliminar la categoría deseleccionada del estado
+      setSelectedCategories(selectedCategories.filter(id => id !== categoryId));
     }
   };
 
+  // Filtrar productos según las categorías seleccionadas
+  const filteredProducts = selectedCategories.length > 0 
+    ? selectedCategories.flatMap(categoryId => allData[categoryId] || [])
+    : []; // Mostrar todos los productos si no hay categorías seleccionadas
+
   return (
     <>
-    <div>
-      <label>Categorias:</label>
-      {categories.map((category, index) => (
-        <div key={index}>
-          <input
-            type="checkbox"
-            id={`category-${index}`}
-            name="categories"
-            value={category.toLowerCase()}
-            checked={selectedCategories.includes(category.toLowerCase())}
-            onChange={handleCheckboxChange}
-          />
-          <label htmlFor={`category-${index}`}>{category}</label>
-        </div>
-      ))}
-    </div>
+      <div>
+        <label>Categorías:</label>
+        {categories.map((category) => (
+          <div key={category.id} className="mb-3">
+            <Checkbox
+              checked={selectedCategories.includes(category.id)}
+              onChange={(event) => handleCheckboxChange(event, category.id)}
+            />
+            <label>{category.name}</label>
+          </div>
+        ))}
+      </div>
 
       <div className="container table-responsive">
         <table className="table table-hover">
           <thead className="table-light">
-            <caption></caption>
             <tr>
               <th>Código</th>
+              <th>Categoria</th>
               <th>Producto</th>
-              <th>Descripcion</th>
+              <th>Descripción</th>
               <th>Unidad</th>
               <th>Precio</th>
             </tr>
           </thead>
           <tbody className="table-group-divider">
-            {/* Replace with data from API response */}
-            {data ? (
-              data.map((product) => (
+            {/* Mostrar productos filtrados */}
+            {filteredProducts.length > 0 ? (
+              filteredProducts.map((product) => (
                 <tr key={product.id}>
                   <td>{product.sku}</td>
+                  <td>{product.category}</td>
                   <td>{product.name}</td>
                   <td>{product.description}</td>
                   <td>{product.unit}</td>
@@ -103,11 +92,10 @@ export const ListPriceProducts = () => {
               ))
             ) : (
               <tr className="table-primary">
-                <td colSpan="8">Esperando conexion a la base de datos</td>
+                <td colSpan="5">No hay productos para mostrar</td>
               </tr>
             )}
           </tbody>
-          <tfoot></tfoot>
         </table>
       </div>
     </>

@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import axios from 'axios';
 import { ModalAdd } from './ModalAdd';
+import { UpdateProduct } from './UpdateProduct';
 
 export const AddProducts = () => {
 
@@ -16,6 +17,23 @@ export const AddProducts = () => {
     brand: '',
     unit: ''
   });
+
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/category');
+        setCategories(response.data);
+      } catch (error) {
+        console.error('Error al obtener las categorías:', error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -61,6 +79,7 @@ export const AddProducts = () => {
 
   return (
     <>
+
       <div className="container mt-5">
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
@@ -98,6 +117,9 @@ export const AddProducts = () => {
               onChange={handleChange}
             >
               <option value="">Selecciona una categoría</option>
+              {categories.map((cat)=>(
+                <option key={cat.id} value={cat.id}>{cat.name}</option>
+              ))}
             </select>
             <ModalAdd nombre='categoria'/>
           </div>

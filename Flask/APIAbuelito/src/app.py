@@ -80,7 +80,7 @@ class Categories(db.Model):
     updated_at = db.Column(db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
         
     
-    def __init__(self, name,description,category,price,stock,sku,image_url,brand,unit):
+    def __init__(self, name):
         self.name = name
 
 ################ MODELO DE TAREAS ######################################
@@ -161,12 +161,6 @@ def get_clients():
   result = clients_schema.dump(all_clients)
   return jsonify(result)
 
-
-#@app.route('/tasks/<id>', methods=['GET'])
-#def get_task(id):
-#  task = Task.query.get(id)
-#  return task_schema.jsonify(task)
-
 #################### ENVIO DE PRODUCTO #################################
 
 @app.route('/products', methods=['POST'])
@@ -190,7 +184,6 @@ def create_product():
   db.session.commit()
 
   return product_schema.jsonify(new_product)
-  
 
 ################## PEDIDO DEL PRODUCTO ###################################
 
@@ -199,7 +192,52 @@ def get_products():
   all_products = Products.query.all()
   result = products_schema.dump(all_products)
   return jsonify(result)     
+
+@app.route('/products/<int:id>', methods=['GET'])
+def get_product(id):
+  product = Products.query.get(id)
+  if product:
+    return product_schema.jsonify(product)
+  else:
+    return({'message':'Producto no entontrado'}),404
   
+################## MODIFICACION DEL PRODUCTO ###################################
+
+@app.route('/products/<int:id>', methods=['PUT'])
+def update_product(id):
+  product =  Products.query.get(id)
+  if not product:
+    return jsonify({'message':'Producto no encontrado'}),404
+  
+  data = request.json
+  
+  # Actualizar los campos del producto
+  if 'name' in data:
+    product.name = data['name']
+  if 'description' in data:
+    product.description = data['description']
+  if 'category' in data:
+    product.category = data['category']
+  if 'price' in data:
+    product.price = data['price']
+  if 'stock' in data:
+    product.stock = data['stock']
+  if 'sku' in data:
+    product.sku = data['sku']
+  if 'image_url' in data:
+    product.image_url = data['image_url']
+  if 'brand' in data:
+    product.brand = data['brand']
+  if 'unit' in data:
+    product.unit = data['unit']
+
+  try:
+    db.session.commit()
+    return jsonify({'message': 'Producto actualizado con éxito'}), 200
+  except Exception as e:
+    db.session.rollback()
+    return jsonify({'message': 'Error al actualizar el producto', 'error': str(e)}), 500
+
 
 #################### ENVIO DE CATEGORIAS #################################
 
