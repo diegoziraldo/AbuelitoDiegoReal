@@ -12,19 +12,23 @@ export const ListPriceProducts = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await Promise.all([
+        const response = await Promise.all([  //En este array de objetos, se guardan los dos objetos que obtenemos de la API.
           axios.get('http://localhost:5000/products'),
           axios.get('http://localhost:5000/category')
         ]);
         
-        const [products, categories] = response;
-        const groupedData = {};
-        products.data.forEach(product => {
-          if (!groupedData[product.category]) {
-            groupedData[product.category] = [];
+        const [products, categories] = response;  //Desestructuracion del array, del cual obtendremos dos objetos con registros como objetos.
+
+        const groupedData = {}; //Se crea un objeto vacio al cual le agregaremos registros en forma de array.
+
+        products.data.forEach(product => {              //Se recorren todos los productos en el array products.
+          if (!groupedData[product.category]) {         //Se verifica que no exista la categoria dentro del objeto.
+            groupedData[product.category] = [];         //Si no existe crea un array vacio adentro del objeto.  
           }
-          groupedData[product.category].push(product);
+          groupedData[product.category].push(product);  //Inmediatamente despues se agregar el array al objeto.
         });
+  
+        
         setAllData(groupedData);
         setCategories(categories.data);
       } catch (error) {
