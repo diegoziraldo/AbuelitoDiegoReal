@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import "bootstrap/dist/css/bootstrap.min.css";
 import Button from '@mui/material/Button';
+import {ModalAdd} from './ModalAdd';
 
 export const GetProducts = () => {
   const [data, setData] = useState(null);
@@ -19,7 +20,10 @@ export const GetProducts = () => {
      fetchData();
    }, []);
 
-
+  const handleUpdate = (id) =>{
+    <ModalAdd/>
+    
+  }
 
 
 
@@ -53,7 +57,7 @@ export const GetProducts = () => {
                 <td>{product.unit}</td>  
                 <td>${product.price}</td>
                 <td>
-                  <Button variant="contained" color="success" onClick>Modificar</Button>
+                  <Button variant="contained" color="success" onClick = {() => handleUpdate(product.id)}>Modificar</Button>
                   <Button variant="contained" color="error" onClick>Eliminar</Button>
                 </td>
               </tr>

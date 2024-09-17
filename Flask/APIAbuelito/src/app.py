@@ -9,15 +9,13 @@ import datetime
 from flask_marshmallow import Marshmallow
 from flask_cors import CORS
 
-
-
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:1234@localhost/AbuelitoDiego'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+
 CORS(app)
 CORS(app, resources={r"/api/*": {"origins": "http://localhost:5173"}})
-
 
 
 db = SQLAlchemy(app)
@@ -93,7 +91,14 @@ class Task(db.Model):
         self.title = title
         self.description = description
 
-
+################ MODELO DE TEST ######################################
+class Borrar(db.Model):
+    __tablename__ = 'borrar' 
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(70))
+    created_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
+    updated_at = db.Column(db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+  
 ############# CON ESTE FRAGMENTO VAMOS A GENERAR TABLAS EN LA BASE DE DATOS ########################################
 with app.app_context():
     db.create_all()
@@ -111,6 +116,11 @@ class ProductSchema(ma.Schema):
 
 #################### ESQUEMA DE LA CATEGORIA #################################
 class CategorySchema(ma.Schema):
+    class Meta:
+        fields = ('id', 'name')
+        
+#################### ESQUEMA DE BORRAR #################################  
+class BorrarSchema(ma.Schema):
     class Meta:
         fields = ('id', 'name')
         
@@ -132,6 +142,8 @@ categories_schema = ProductSchema(many=True)
 task_schema = TaskSchema()
 tasks_schema = TaskSchema(many=True)
 
+borrar_schema = BorrarSchema()
+borrars_schema = BorrarSchema(many=True)
 
 ################## ENVIO DEL CLIENTE ###################################
 @app.route('/clients', methods=['POST'])
@@ -238,7 +250,6 @@ def update_product(id):
     db.session.rollback()
     return jsonify({'message': 'Error al actualizar el producto', 'error': str(e)}), 500
 
-
 #################### ENVIO DE CATEGORIAS #################################
 
 @app.route('/category', methods=['POST'])
@@ -255,7 +266,6 @@ def create_category():
   db.session.commit()
 
   return product_schema.jsonify(new_category)
-  
 
 ################## PEDIDO DE LA CATEGORIA ###################################
 
@@ -264,7 +274,6 @@ def get_categories():
   all_categories = Categories.query.all()
   result = products_schema.dump(all_categories)
   return jsonify(result)     
-  
 
 #################### ENVIO DE TAREAS #################################
 

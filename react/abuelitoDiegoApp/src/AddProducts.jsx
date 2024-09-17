@@ -39,6 +39,8 @@ export const AddProducts = () => {
     const { name, value } = event.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
+
+  
   const handleSubmit = async (event) => {
     event.preventDefault();
     console.log(`Producto a agregar: ` + formData.name);

@@ -43,7 +43,6 @@ export const UpdateProduct = ({ productId }) => {
         {/* Aquí irían el resto de los campos de formulario */}
         <button type="submit">Actualizar Producto</button>
       </form>
-<p>caca</p>
     </>
   )
 }

@@ -12,23 +12,21 @@ export const ListPriceProducts = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await Promise.all([  //En este array de objetos, se guardan los dos objetos que obtenemos de la API.
+        const response = await Promise.all([
           axios.get('http://localhost:5000/products'),
           axios.get('http://localhost:5000/category')
         ]);
-        
-        const [products, categories] = response;  //Desestructuracion del array, del cual obtendremos dos objetos con registros como objetos.
 
-        const groupedData = {}; //Se crea un objeto vacio al cual le agregaremos registros en forma de array.
+        const [products, categories] = response;
 
-        products.data.forEach(product => {              //Se recorren todos los productos en el array products.
-          if (!groupedData[product.category]) {         //Se verifica que no exista la categoria dentro del objeto.
-            groupedData[product.category] = [];         //Si no existe crea un array vacio adentro del objeto.  
+        const groupedData = {};
+        products.data.forEach(product => {
+          if (!groupedData[product.category]) {
+            groupedData[product.category] = [];
           }
-          groupedData[product.category].push(product);  //Inmediatamente despues se agregar el array al objeto.
+          groupedData[product.category].push(product);
         });
-  
-        
+
         setAllData(groupedData);
         setCategories(categories.data);
       } catch (error) {
@@ -49,59 +47,66 @@ export const ListPriceProducts = () => {
     }
   };
 
-  // Filtrar productos según las categorías seleccionadas
-  const filteredProducts = selectedCategories.length > 0 
-    ? selectedCategories.flatMap(categoryId => allData[categoryId] || [])
-    : []; // Mostrar todos los productos si no hay categorías seleccionadas
-
   return (
-    <>
-      <div>
-        <label>Categorías:</label>
-        {categories.map((category) => (
-          <div key={category.id} className="mb-3">
-            <Checkbox
-              checked={selectedCategories.includes(category.id)}
-              onChange={(event) => handleCheckboxChange(event, category.id)}
-            />
-            <label>{category.name}</label>
+    <div className="container-fluid">
+      <div className="row">
+        {/* Lado izquierdo: Categorías */}
+        <div className="col-md-3 border-end">
+          <div>
+            <label>Categorías:</label>
+            {categories.map((category) => (
+              <div key={category.id} className="">
+                <Checkbox
+                  checked={selectedCategories.includes(category.id)}
+                  onChange={(event) => handleCheckboxChange(event, category.id)}
+                />
+                <label>{category.name}</label>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+        </div>
 
-      <div className="container table-responsive">
-        <table className="table table-hover">
-          <thead className="table-light">
-            <tr>
-              <th>Código</th>
-              <th>Categoria</th>
-              <th>Producto</th>
-              <th>Descripción</th>
-              <th>Unidad</th>
-              <th>Precio</th>
-            </tr>
-          </thead>
-          <tbody className="table-group-divider">
-            {/* Mostrar productos filtrados */}
-            {filteredProducts.length > 0 ? (
-              filteredProducts.map((product) => (
-                <tr key={product.id}>
-                  <td>{product.sku}</td>
-                  <td>{product.category}</td>
-                  <td>{product.name}</td>
-                  <td>{product.description}</td>
-                  <td>{product.unit}</td>
-                  <td>${product.price}</td>
-                </tr>
-              ))
-            ) : (
-              <tr className="table-primary">
-                <td colSpan="5">No hay productos para mostrar</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+        {/* Lado derecho: Tablas de productos */}
+        <div className="col-md-9">
+          {selectedCategories.map((categoryId) => {
+            const categoryProducts = allData[categoryId] || [];
+
+            return (
+              <div key={categoryId} className="container table-responsive">
+                <h3>{categories.find(cat => cat.id === categoryId)?.name}</h3>
+                <table className="table table-hover">
+                  <thead className="table-light">
+                    <tr>
+                      <th>Código</th>
+                      <th>Producto</th>
+                      <th>Descripción</th>
+                      <th>Unidad</th>
+                      <th>Precio</th>
+                    </tr>
+                  </thead>
+                  <tbody className="table-group-divider">
+                    {categoryProducts.length > 0 ? (
+                      categoryProducts.map((product) => (
+                        <tr key={product.id}>
+                          <td>{product.sku}</td>
+                          <td>{product.name}</td>
+                          <td>{product.description}</td>
+                          <td>{product.unit}</td>
+                          <td>${product.price}</td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr className="table-primary">
+                        <td colSpan="5">No hay productos en esta categoría</td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            );
+          })}
+        </div>
       </div>
-    </>
+    </div>
   );
 };
