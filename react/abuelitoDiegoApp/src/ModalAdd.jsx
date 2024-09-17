@@ -48,7 +48,7 @@ export const ModalAdd = ({ nombre }) => {
           <Form.Control 
             type="text" 
             placeholder={`Ingrese el nombre de la ${nombre}`} 
-            value={categoryName}  // Asocia el estado al input
+            value={categoryName}  
             onChange={handleChange}
             />
         </Form.Group>

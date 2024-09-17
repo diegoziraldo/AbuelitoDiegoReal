@@ -256,7 +256,7 @@ def update_product(id):
 def create_category():
   #Aca estoy guardando en una variable lo que llega del json.
   name = request.json['name']
-
+  print(f"Valor recibido para la categoría: {name} ({type(name)})")
   
   #Aca estoy creando una instancia de la clase Task, y pasandole por parametros los valores que guarde anteriormente
   new_category = Categories(name)
@@ -272,7 +272,7 @@ def create_category():
 @app.route('/category', methods=['GET'])
 def get_categories():
   all_categories = Categories.query.all()
-  result = products_schema.dump(all_categories)
+  result = categories_schema.dump(all_categories)
   return jsonify(result)     
 
 #################### ENVIO DE TAREAS #################################
