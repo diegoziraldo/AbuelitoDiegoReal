@@ -37,13 +37,13 @@ export const ListPriceProducts = () => {
   }, []);
 
   // Manejar cambios en los checkboxes de las categorías
-  const handleCheckboxChange = (event, categoryId) => {
+  const handleCheckboxChange = (event, category) => {
     if (event.target.checked) {
       // Agregar la categoría seleccionada al estado
-      setSelectedCategories([...selectedCategories, categoryId]);
+      setSelectedCategories([...selectedCategories, category]);
     } else {
       // Eliminar la categoría deseleccionada del estado
-      setSelectedCategories(selectedCategories.filter(id => id !== categoryId));
+      setSelectedCategories(selectedCategories.filter(cat => cat !== category));
     }
   };
 
@@ -55,10 +55,10 @@ export const ListPriceProducts = () => {
           <div>
             <label>Categorías:</label>
             {categories.map((category) => (
-              <div key={category.id} className="">
+              <div key={category.name} className="">
                 <Checkbox
-                  checked={selectedCategories.includes(category.id)}
-                  onChange={(event) => handleCheckboxChange(event, category.id)}
+                  checked={selectedCategories.includes(category.name)}
+                  onChange={(event) => handleCheckboxChange(event, category.name)}
                 />
                 <label>{category.name}</label>
               </div>
@@ -68,12 +68,12 @@ export const ListPriceProducts = () => {
 
         {/* Lado derecho: Tablas de productos */}
         <div className="col-md-9">
-          {selectedCategories.map((categoryId) => {
-            const categoryProducts = allData[categoryId] || [];
+          {selectedCategories.map((category) => {
+            const categoryProducts = allData[category] || [];
 
             return (
-              <div key={categoryId} className="container table-responsive">
-                <h3>{categories.find(cat => cat.id === categoryId)?.name}</h3>
+              <div key={category} className="container table-responsive">
+                <h3>{categories.find(cat => cat.id === category)?.name}</h3>
                 <table className="table table-hover">
                   <thead className="table-light">
                     <tr>
