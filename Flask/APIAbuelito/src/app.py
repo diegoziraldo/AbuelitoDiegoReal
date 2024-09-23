@@ -1,6 +1,6 @@
 # Link=https://www.youtube.com/watch?v=MvVqjQqSdM4
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import DateTime, Column, Integer, LargeBinary
 from sqlalchemy.ext.declarative import declarative_base
@@ -321,12 +321,46 @@ def create_category():
 
 ################## PEDIDO DE LA CATEGORIA ###################################
 
-
 @app.route('/category', methods=['GET'])
 def get_categories():
     all_categories = Categories.query.all()
     result = categories_schema.dump(all_categories)
     return jsonify(result)
+
+
+#################### ENVIO DE VENTAS #################################
+
+# @app.route('/add-sales', methods=['POST'])
+# def create_sales():
+#     return 'hola desde servidor'
+
+
+
+#################### PEDIDO DE VENTAS #################################
+@app.route('/add-sales', methods=['GET'])
+def sales():
+    return jsonify()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #################### ENVIO DE TAREAS #################################
 
