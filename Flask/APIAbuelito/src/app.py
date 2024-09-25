@@ -1,8 +1,8 @@
 # Link=https://www.youtube.com/watch?v=MvVqjQqSdM4
 
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import DateTime, Column, Integer, LargeBinary
+from sqlalchemy import DateTime, Column, Integer, LargeBinary, or_
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.sql.expression import func
 import datetime
@@ -339,12 +339,30 @@ def get_categories():
 #################### PEDIDO DE VENTAS #################################
 @app.route('/add-sales', methods=['GET'])
 def sales():
-    return jsonify()
+    saludo = 'hola'
+    return jsonify(saludo)
 
 
+#################### BUSCADOR DE PRODUCTOS #################################
+@app.route('/add-sales', methods=['GET'])
+def search_products():
+    query = request.args.get('query')
+    
+    if not query:
+        return jsonify({"message": "No query provided", "products": []})
 
+    products = Products.query.filter(or_(
+        Products.name.ilike(f'{query}%'),
+        Products.name.ilike(f'%{query}%'),
+        Products.name.ilike(f'{query}{query}%')
+    )).all()
 
-
+    product_list = [{'id': p.id, 'name': p.name, 'price': p.price} for p in products]
+    
+    return jsonify({
+        "message": f"Found {len(products)} products matching '{query}'",
+        "products": product_list
+    })
 
 
 
