@@ -10,7 +10,7 @@ export const AddSales = () => {
 
   // Función para manejar los cambios en el input de búsqueda
   const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value.toLowerCase());
+    setSearchTerm(e.target.value);
   };
 
   // useEffect para ejecutar la búsqueda cuando cambia el término
@@ -44,9 +44,18 @@ export const AddSales = () => {
 
   // Función para filtrar los productos según el término de búsqueda
   const filterProducts = (products, term) => {
-    return products.filter(product =>
-      typeof product.name === 'string' && product.name.toLowerCase().startsWith(term.toLowerCase())
-    );
+    return products.filter(product => {
+      // Convertimos el término de búsqueda a minúsculas
+      const lowerTerm = term.toLowerCase();
+  
+      // Verificamos si el término de búsqueda está incluido en alguna de las propiedades relevantes del producto
+      return (
+        product.sku.toLowerCase().includes(lowerTerm) || 
+        product.name.toLowerCase().includes(lowerTerm) || 
+        product.description.toLowerCase().includes(lowerTerm) ||
+        product.price.toString().includes(lowerTerm)  // Si buscas por precio también
+      );
+    });
   };
 
   return (
@@ -71,19 +80,20 @@ export const AddSales = () => {
                       className="list-group-item cursor-pointer"
                       onClick={() => handleProductClick(product.id)}
                     >
-
+                      
                       <div className="product-details-container">
                         <div className="product-details">
-                          <p>ID: {product.id}</p>
-                          <p>Nombre: {product.name}</p>
-                          <p>Precio: ${product.price}</p>
+                          <p><b>CODIGO:</b> {product.sku}</p>
+                          <p><b>Nombre:</b> {product.name}</p>
+                          <p><b>Descripcion:</b> {product.description}</p>
+                          <p><b>Precio:</b> ${product.price}</p>
                           <Button>Comprar</Button>
                         </div>
 
                         <div className="product-image">
                           <img
-                            // src={selectedProduct.image}
-                            // alt={selectedProduct.name}
+                            // src={product.image}
+                            // alt={product.name}
                             src={"../public/img/moon-8653540_1920.jpg"}
                             className="img-fluid"
                           />
@@ -103,7 +113,7 @@ export const AddSales = () => {
           {selectedProduct && (
             <div className="mt-4">
               <h4>Detalles de la compra:</h4>
-
+              
             </div>
           )}
         </div>
