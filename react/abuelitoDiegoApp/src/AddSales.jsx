@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import axios from 'axios';
 import './AddSales.css';
+import { DetailSales } from './DetailSales';
 
 export const AddSales = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -47,11 +48,11 @@ export const AddSales = () => {
     return products.filter(product => {
       // Convertimos el término de búsqueda a minúsculas
       const lowerTerm = term.toLowerCase();
-  
+
       // Verificamos si el término de búsqueda está incluido en alguna de las propiedades relevantes del producto
       return (
-        product.sku.toLowerCase().includes(lowerTerm) || 
-        product.name.toLowerCase().includes(lowerTerm) || 
+        product.sku.toLowerCase().includes(lowerTerm) ||
+        product.name.toLowerCase().includes(lowerTerm) ||
         product.description.toLowerCase().includes(lowerTerm) ||
         product.price.toString().includes(lowerTerm)  // Si buscas por precio también
       );
@@ -80,7 +81,7 @@ export const AddSales = () => {
                       className="list-group-item cursor-pointer"
                       onClick={() => handleProductClick(product.id)}
                     >
-                      
+
                       <div className="product-details-container">
                         <div className="product-details">
                           <p><b>CODIGO:</b> {product.sku}</p>
@@ -94,7 +95,8 @@ export const AddSales = () => {
                           <img
                             // src={product.image}
                             // alt={product.name}
-                            src={"../public/img/moon-8653540_1920.jpg"}
+                            src={"http://localhost:5000" + product.image_url}
+                            //src="../../Flask/APIAbuelito/src/img/1.jpg"
                             className="img-fluid"
                           />
                         </div>
@@ -109,14 +111,7 @@ export const AddSales = () => {
           </div>
 
         </div>
-        <div className='col-md-4 border-end'>
-          {selectedProduct && (
-            <div className="mt-4">
-              <h4>Detalles de la compra:</h4>
-              
-            </div>
-          )}
-        </div>
+        <DetailSales />
       </div>
     </div>
 

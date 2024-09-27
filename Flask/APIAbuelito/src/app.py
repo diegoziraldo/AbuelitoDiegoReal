@@ -6,12 +6,20 @@ from sqlalchemy import DateTime, Column, Integer, LargeBinary, or_
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.sql.expression import func
 import datetime
+import os
 from flask_marshmallow import Marshmallow
 from flask_cors import CORS
+from flask import send_from_directory
 
-app = Flask(__name__)
+
+app = Flask(__name__, static_url_path='/static')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:1234@localhost/AbuelitoDiego'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+UPLOAD_FOLDER = 'img/'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+
+app.config['UPLOAD_FOLDER'] = os.path.join('static', 'img')
 
 
 CORS(app)
@@ -20,6 +28,18 @@ CORS(app, resources={r"/api/*": {"origins": "http://localhost:5173"}})
 
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
+
+
+@app.route('/img/<path:filename>')
+def serve_image(filename):
+    return send_from_directory('img', filename)
+
+
+
+
+
+
+
 ################ MODELO DE CLIENTES #####################################
 
 
@@ -209,22 +229,32 @@ def get_clients():
 
 @app.route('/products', methods=['POST'])
 def create_product():
-    # Aca estoy guardando en una variable lo que llega del json.
-    name = request.json['name']
-    description = request.json['description']
-    category = request.json['category']
-    price = request.json['price']
-    stock = request.json['stock']
-    sku = request.json['sku']
-    image_url = request.json['image_url']
-    brand = request.json['brand']
-    unit = request.json['unit']
+    # Aca estoy guardando en variables lo que llega del formulario
+    name = request.form.get('name')
+    description = request.form.get('description')
+    category = request.form.get('category')
+    price = request.form.get('price')
+    stock = request.form.get('stock')
+    sku = request.form.get('sku')
+    brand = request.form.get('brand')
+    unit = request.form.get('unit')
 
-    # Aca estoy creando una instancia de la clase Task, y pasandole por parametros los valores que guarde anteriormente
-    new_product = Products(name, description, category,
-                           price, stock, sku, image_url, brand, unit)
+    # Verifica si se subió una imagen
+    image_url = ''
+    if 'image' in request.files:
+        image = request.files['image']
+        
+        # Guarda la imagen en la carpeta del servidor
+        image_path = os.path.join(app.config['UPLOAD_FOLDER'], image.filename)
+        image.save(image_path)
+        
+        # Guarda solo la URL de la imagen en la base de datos
+        image_url = f"/static/img/{image.filename}"
 
-    # Aca estoy guardando en la base de datos lo que guarde anteriormente
+    # Aca estoy creando una instancia de la clase Products con los valores obtenidos
+    new_product = Products(name, description, category,price, stock, sku, image_url, brand, unit)
+
+    # Aca estoy guardando el nuevo producto en la base de datos
     db.session.add(new_product)
     db.session.commit()
 

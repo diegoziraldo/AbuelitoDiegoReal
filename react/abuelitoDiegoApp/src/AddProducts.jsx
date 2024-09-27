@@ -35,49 +35,52 @@ export const AddProducts = () => {
 
 
 
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setFormData((prevData) => ({ ...prevData, [name]: value }));
-  };
+
 
   
   const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log(`Producto a agregar: ` + formData.name);
+  // Crear un objeto FormData para manejar la imagen y los demás datos
+  const formDataToSend = new FormData();
+  formDataToSend.append('name', formData.name);
+  formDataToSend.append('description', formData.description);
+  formDataToSend.append('category', formData.category);
+  formDataToSend.append('price', formData.price);
+  formDataToSend.append('stock', formData.stock);
+  formDataToSend.append('sku', formData.sku);
+  formDataToSend.append('brand', formData.brand);
+  formDataToSend.append('unit', formData.unit);
 
-    setFormData({
-      name: '',
-      description: '',
-      category: '',
-      price: '',
-      stock: '',
-      sku: '',
-      image_url: '',
-      brand: '',
-      unit: ''
-
-    });
-
-    try {
-      const response = await axios.post('http://localhost:5000/products', formData);
-      console.log('Producto agregado:', response.data);
-      // Handle successful response (e.g., clear form, show success message)
-      setFormData({
-        name: '',
-        description: '',
-        category: '',
-        price: '',
-        stock: '',
-        sku: '',
-        image_url: '',
-        brand: '',
-        unit: ''
-      });
-    } catch (error) {
-      console.error('Error al agregar el producto:', error);
-
-    }
+  if (formData.image_url) {
+    formDataToSend.append('image', formData.image_url);  // Asegúrate de que 'image' es el nombre que espera el servidor
   }
+
+  try {
+    const response = await axios.post('http://localhost:5000/products', formDataToSend, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    console.log('Producto agregado:', response.data);
+  } catch (error) {
+    console.error('Error al agregar el producto:', error);
+  }
+};
+
+
+// Modifica el handleChange para guardar el archivo en el estado
+const handleChange = (event) => {
+  const { name, value, files } = event.target;
+
+  if (name === 'image_url') {
+    setFormData((prevData) => ({ ...prevData, image_url: files[0] })); // Almacena el archivo en el estado
+  } else {
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
+  }
+};
+
+
+
 
   return (
     <>
