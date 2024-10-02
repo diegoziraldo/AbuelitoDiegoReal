@@ -6,6 +6,7 @@ import { DetailSales } from './DetailSales';
 
 export const AddSales = () => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [addSalesFinal, setaddSalesFinal] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
 
@@ -42,6 +43,30 @@ export const AddSales = () => {
       setSelectedProduct(foundProduct);
     }
   };
+
+  const addSalesFinish = (product)=>{
+
+    const productSales = {
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      quantity:1,
+      img: product.image_url
+
+    }
+
+
+    setaddSalesFinal((prevSales)=>{
+      const arraySales = [...prevSales, productSales]
+      return arraySales;
+
+    })
+
+    
+    
+  }
+
+
 
   // Función para filtrar los productos según el término de búsqueda
   const filterProducts = (products, term) => {
@@ -88,15 +113,12 @@ export const AddSales = () => {
                           <p><b>Nombre:</b> {product.name}</p>
                           <p><b>Descripcion:</b> {product.description}</p>
                           <p><b>Precio:</b> ${product.price}</p>
-                          <Button>Comprar</Button>
+                          <Button onClick={() => addSalesFinish(product)}>Comprar</Button>
                         </div>
 
                         <div className="product-image">
                           <img
-                            // src={product.image}
-                            // alt={product.name}
                             src={"http://localhost:5000" + product.image_url}
-                            //src="../../Flask/APIAbuelito/src/img/1.jpg"
                             className="img-fluid"
                           />
                         </div>
@@ -111,7 +133,7 @@ export const AddSales = () => {
           </div>
 
         </div>
-        <DetailSales />
+        <DetailSales SalesProduct={addSalesFinal} />
       </div>
     </div>
 
