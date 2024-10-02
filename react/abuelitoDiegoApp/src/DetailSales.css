@@ -1,11 +1,12 @@
-.product-image {
-
-  flex: 1; /* Ocupa el espacio disponible a la derecha */
-  display: flex;
-  justify-content: center; /* Centrar la imagen horizontalmente */
+.product-image-details {
+  margin: 10px;
+  border: 1px solid gainsboro;
+  background-color: whitesmoke;
+  border-radius: 5px;
+  padding: 10px;
 }
 
-.product-image img {
+.product-image-details img {
 
   max-width: 90%; /* Que la imagen nunca exceda el ancho del contenedor */
   height: auto; /* Mantener las proporciones de la imagen */

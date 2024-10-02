@@ -113,7 +113,7 @@ export const AddSales = () => {
                           <p><b>Nombre:</b> {product.name}</p>
                           <p><b>Descripcion:</b> {product.description}</p>
                           <p><b>Precio:</b> ${product.price}</p>
-                          <Button onClick={() => addSalesFinish(product)}>Comprar</Button>
+                          <Button className="btn btn-primary" onClick={() => addSalesFinish(product)}>Comprar</Button>
                         </div>
 
                         <div className="product-image">
