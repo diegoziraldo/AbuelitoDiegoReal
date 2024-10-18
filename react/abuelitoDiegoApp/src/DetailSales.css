@@ -1,3 +1,14 @@
+.product-details-container {
+  border: 1px solid gainsboro;
+  background-color: whitesmoke;
+  padding: 20px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between; /* Para crear espacio entre los dos elementos */
+  align-items: flex-start; /* Alinear los elementos en la parte superior */
+}
+
+
 .product-image-details {
   margin: 10px;
   border: 1px solid gainsboro;
